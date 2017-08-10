@@ -28,22 +28,22 @@ public class Trend implements GenericModel{
     @Column(name = "ID")
     private String id;
 
-    @Column(name = "NAME", nullable = false, unique = true)
+    @Column(name = "NAME", nullable = false, unique = false)
     private String title;
 
-    @Column(name = "VERTICAL", nullable = false, unique = true)
+    @Column(name = "VERTICAL", nullable = false, unique = false)
     private String vertical;
 
-    @Column(name = "MUST_HAVE", nullable = false, unique = true)
+    @Column(name = "MUST_HAVE", nullable = false, unique = false)
     private String mustHave;
 
-    @Column(name = "MUST_NOT_HAVE", nullable = false, unique = true)
+    @Column(name = "MUST_NOT_HAVE", nullable = false, unique = false)
     private String mustNotHave;
 
-    @Column(name = "START_DATE", nullable = false, unique = true)
+    @Column(name = "START_DATE", nullable = false, unique = false)
     private Date startDate;
 
-    @Column(name = "END_DATE", nullable = false, unique = true)
+    @Column(name = "END_DATE", nullable = false, unique = false)
     private Date endDate;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -51,4 +51,9 @@ public class Trend implements GenericModel{
             joinColumns = {@JoinColumn(name = "TREND_ID")},
             inverseJoinColumns = {@JoinColumn(name = "IMAGE_ID")})
     private Set<Images> images = new HashSet();
+
+    @OneToMany(mappedBy = "trend")
+    private Set<Task> tasks = new HashSet();
+
+
 }

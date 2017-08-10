@@ -1,6 +1,9 @@
 package com.flipkart.mdm.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.flipkart.mdm.dal.dao.TaskDAO;
+import com.flipkart.mdm.dal.exception.DBException;
+import com.google.inject.Inject;
 import io.dropwizard.hibernate.UnitOfWork;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +22,12 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class TaskResource {
 
+    private TaskDAO taskDAO;
 
+    @Inject
+    public TaskResource(TaskDAO taskDAO) {
+        this.taskDAO = taskDAO;
+    }
 
 
     @GET
@@ -27,8 +35,8 @@ public class TaskResource {
     @UnitOfWork
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTask(String taskId) {
-        return Response.ok().build();
+    public Response getTask(String taskId) throws DBException {
+        return Response.ok(taskDAO.findById(taskId)).build();
     }
 
 }

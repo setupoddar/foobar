@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <title>Home</title>
+
+    <script>
+        $(document).ready(function () {
+            $(".datepicker").datepicker();
+
+            $.get("http://localhost:8080/api/vertical", function (data) {
+                select = document.getElementById('vertical');
+
+                for (var i = 0; i <= data.length; i++) {
+                    var opt = document.createElement('option');
+                    opt.value = data[i];
+                    opt.innerHTML = data[i];
+                    select.appendChild(opt);
+                }
+            });
+        });
+
+        $(function () {
+            // Multiple images preview in browser
+            var imagesPreview = function (input, placeToInsertImagePreview) {
+                if (input.files) {
+                    var filesAmount = input.files.length;
+
+                    for (i = 0; i < filesAmount; i++) {
+                        var reader = new FileReader();
+
+                        reader.onload = function (event) {
+                            $($.parseHTML('<img height="200" width="200" style="margin-right:5px">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                        }
+
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
+
+            };
+            var validate = function (input) {
+                for (i = 0; i < input.files.length; i++) {
+                    var ext = input.files.item(i).name.split('.').pop().toLowerCase();
+                    if ($.inArray(ext, ['jpg']) == -1) {
+                        alert('invalid extension! Use only .jpg files');
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            $('#images').on('change', function () {
+                if (validate(this)) {
+                    imagesPreview(this, 'div.display_images');
+                } else {
+                    document.getElementById('images').value = "";
+                }
+
+            });
+        });
+
+        $(function () {
+            $('#trendForm').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'post',
+                    url: '/api/trend',
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function (json) {
+                        console.log(json)
+                        alert("Trend Created");
+                    },
+                    error: function (json) {
+                        var message = JSON.parse(json.responseText).message;
+                        alert(message);
+                    }
+                });
+            });
+        });
+
+
+    </script>
+</head>
+<body>
+<center><h2>CREATE TREND</h2>
+
+    <form id="trendForm">
+        <h2>Trend Title : <input type="text" name="title"></h2>
+        Vertical : <select id="vertical" name="vertical"></select><br><br>
+        Upload trend sample images : <input type="file" name="images" id="images" multiple>
+
+        <div class="display_images">
+
+        </div>
+        <h2>Guidelines :</h2>
+
+        <h3> Must Have </h3>
+        <textarea id="must_have" name="must_have" rows="4" cols="50">
+    </textarea>
+
+        <h3> Must Not Have</h3>
+        <textarea id="must_not_have" name="must_not_have" rows="4" cols="50">
+    </textarea>
+        <br><br>
+        Trend start date : <input class="datepicker" name="start_date"/><br><br>
+        Trend end date : <input class="datepicker" name="end_date"/><br><br>
+        <input type="submit" name="submit" value="Create">
+    </form>
+</center>
+
+</body>
+</html>

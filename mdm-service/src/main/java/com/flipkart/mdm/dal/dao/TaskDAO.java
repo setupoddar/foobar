@@ -1,16 +1,16 @@
 package com.flipkart.mdm.dal.dao;
 
 
-import com.flipkart.mdm.model.Trend;
+import com.flipkart.mdm.model.Task;
 import com.google.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 
 @Slf4j
-public class TrendDAO extends GenericDAO<Trend> {
+public class TaskDAO extends GenericDAO<Task> {
 
     @Inject
-    protected TrendDAO(SessionFactory sessionFactory) {
+    protected TaskDAO(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 
