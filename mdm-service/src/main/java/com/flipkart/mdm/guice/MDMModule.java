@@ -1,6 +1,8 @@
 package com.flipkart.mdm.guice;
 
+import com.flipkart.mdm.client.SHttpClient;
 import com.flipkart.mdm.client.VHttpClient;
+import com.flipkart.mdm.client.ZHttpClient;
 import com.flipkart.mdm.config.MDMConfiguration;
 import com.flipkart.mdm.model.*;
 import com.google.gson.Gson;
@@ -35,6 +37,8 @@ public class MDMModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(VHttpClient.class);
+        bind(SHttpClient.class);
+        bind(ZHttpClient.class);
         bind(Gson.class).in(Singleton.class);
     }
 
@@ -46,7 +50,6 @@ public class MDMModule extends AbstractModule {
 
 
     @Provides
-    @Singleton
     Client provideClient() throws Exception {
         ClientConfig cc = new ClientConfig();
         cc.property(ClientProperties.ASYNC_THREADPOOL_SIZE, 5);
