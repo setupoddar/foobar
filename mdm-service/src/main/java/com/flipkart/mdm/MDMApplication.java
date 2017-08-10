@@ -10,6 +10,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 
 public class MDMApplication extends Application<MDMConfiguration> {
@@ -17,7 +18,7 @@ public class MDMApplication extends Application<MDMConfiguration> {
     private GuiceBundle<MDMConfiguration> guiceBundle;
 
     public static void main(String[] args) throws Exception {
-        new MDMApplication().run(args);
+            new MDMApplication().run(args);
     }
 
     @Override
@@ -47,6 +48,8 @@ public class MDMApplication extends Application<MDMConfiguration> {
 
     @Override
     public void run(MDMConfiguration configuration, Environment environment) throws Exception {;
+        environment.jersey().register(MultiPartFeature.class);
         environment.jersey().setUrlPattern("/api/*");
+
     }
 }
