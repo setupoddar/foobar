@@ -33,6 +33,6 @@ public class FileUtils {
                 outputStream.close();
 
         }
-        return FILE_URL + fileName;
+        return  fileName;
     }
 }
