@@ -40,7 +40,7 @@ public class UserResource {
     @UnitOfWork
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("userId")String userId) {
+    public Response getUser(@PathParam("userId") String userId) {
 
         return Response.ok(userDAO.findByName(userId)).build();
     }
@@ -51,11 +51,14 @@ public class UserResource {
     @UnitOfWork
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserRoles(@PathParam("userId")String userId) {
+    public Response getUserRoles(@PathParam("userId") String userId) {
         List<String> res = new ArrayList();
-        Set<Role> rolesList = userDAO.findByName(userId).getRoles();
-        for(Role r : rolesList){
-            res.add(r.getName());
+        User user = userDAO.findByName(userId);
+        if (user != null) {
+            Set<Role> rolesList = userDAO.findByName(userId).getRoles();
+            for (Role r : rolesList) {
+                res.add(r.getName());
+            }
         }
         return Response.ok(res).build();
     }
@@ -108,11 +111,11 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll() {
-        Map<String,Set<String>> res = new HashMap();
+        Map<String, Set<String>> res = new HashMap();
         List<User> users = userDAO.getAll();
-        for(User user : users){
+        for (User user : users) {
             res.put(user.getName(), new HashSet());
-            for(Role r : user.getRoles()){
+            for (Role r : user.getRoles()) {
                 res.get(user.getName()).add(r.getName());
             }
         }

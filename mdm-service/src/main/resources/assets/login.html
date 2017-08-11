@@ -21,7 +21,7 @@
                 contentType: false,
                 success: function (json) {
                     console.log(json)
-                    setCookie("username",$('#username').val() )
+                    setCookie("username", $('#username').val())
                     window.location = 'home.html'
                 },
                 error: function (json) {
@@ -34,22 +34,25 @@
 
     function setCookie(cname, cvalue, exdays) {
         var d = new Date();
-        d.setTime(d.getTime() + (exdays*60*60*1000));
-        var expires = "expires="+ d.toUTCString();
+        d.setTime(d.getTime() + (exdays * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
 
 </script>
 <body>
+<center><h2>Login</h2>
 
-<form id="login">
-    <div class="container">
-        <label><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="username" id="username" required>
-        <label><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" id="password" required>
-        <button type="submit">Login</button>
-    </div>
-</form>
+    <form id="login">
+
+        <div class="container">
+            <label><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="username" id="username" required>
+            <label><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" id="password" required>
+            <button type="submit">Login</button>
+        </div>
+    </form>
+</center>
 </body>
 </html>

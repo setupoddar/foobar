@@ -1,5 +1,6 @@
 package com.flipkart.mdm.model;
 
+import com.flipkart.mdm.model.enums.TaskStatus;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @Entity
 @Table(name = "CURATED_RESULT")
-public class CuratedFSN implements GenericModel {
+public class QCFSN implements GenericModel {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -25,18 +26,18 @@ public class CuratedFSN implements GenericModel {
     @Column(name = "ID")
     private String id;
 
-    @OneToOne
-    @JoinColumn(name = "TASK_ID", nullable = false, unique = false)
-    private Task taskId;
-
     @ManyToOne
     @JoinColumn(name = "TREND_ID", nullable = false, unique = false)
     private Trend trend;
 
-    @OneToMany()
-    @JoinColumn(name = "TREND_ID", nullable = false, unique = false)
-    private User  user;
-
     @Column(name="FSNS", nullable = false, unique = false)
     private String fsns;
+
+    @Column(name = "STATUS", nullable = false, unique = false)
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
+
+    @Column(name="FINAL_FSNS", nullable = true, unique = false)
+    private String finalFsn;
+
 }

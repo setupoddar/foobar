@@ -11,9 +11,12 @@
         $(document).ready(function () {
 
             var username = getCookie("username");
+            if(username == null)
+                window.location = 'login.html'
+
             $.ajax({
                 type: "GET",
-                url: '/api/user/'+username+'/roles',
+                url: '/api/user/' + username + '/roles',
                 data: "{}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
@@ -26,13 +29,10 @@
                         var id = $.inArray("CURATOR", response);
                         if (id != -1) {
                             $('#curator').show();
-                        }   else{
+                        } else {
                             $('#qc').show();
                         }
                     }
-
-
-
                 },
                 error: function (msg) {
                     var message = JSON.parse(json.responseText).message;
@@ -44,10 +44,10 @@
         function getCookie(cname) {
             var name = cname + "=";
             var ca = document.cookie.split(';');
-            for(var i=0; i<ca.length; i++) {
+            for (var i = 0; i < ca.length; i++) {
                 var c = ca[i];
-                while (c.charAt(0)==' ') c = c.substring(1);
-                if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+                while (c.charAt(0) == ' ') c = c.substring(1);
+                if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
             }
             return "";
         }
@@ -75,7 +75,7 @@ You are eligible for Below
             </li>
             <li><a>QC</a>
                 <ul>
-
+                    <li><a href="qcList.html">qc List</a></li>
                 </ul>
             </li>
         </ul>
@@ -85,16 +85,19 @@ You are eligible for Below
         <li><a>Tasks</a>
             <ul>
                 <li><a href="task.html">Task List</a></li>
-
+            </ul>
+        </li>
+        <li><a>QC</a>
+            <ul>
+                <li><a href="qcList.html">qc List</a></li>
             </ul>
         </li>
     </div>
 
-
     <div id="qc" hidden="true">
         <li><a>Tasks</a>
             <ul>
-                <li><a href="task.html">Task List</a></li>
+                <li><a href="qcList.html">qc List</a></li>
             </ul>
         </li>
     </div>

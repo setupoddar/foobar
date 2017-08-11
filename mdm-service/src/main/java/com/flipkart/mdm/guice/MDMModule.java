@@ -1,5 +1,6 @@
 package com.flipkart.mdm.guice;
 
+import com.flipkart.mdm.client.MHttpClient;
 import com.flipkart.mdm.client.SHttpClient;
 import com.flipkart.mdm.client.VHttpClient;
 import com.flipkart.mdm.client.ZHttpClient;
@@ -39,6 +40,7 @@ public class MDMModule extends AbstractModule {
         bind(VHttpClient.class);
         bind(SHttpClient.class);
         bind(ZHttpClient.class);
+        bind(MHttpClient.class);
         bind(Gson.class).in(Singleton.class);
     }
 

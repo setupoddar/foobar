@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+    <link rel="stylesheet" href="curation.css">
+    <title>Curation</title>
+    <script>
+
+        var getQueryParam = function (name) {
+            var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+            if (results == null) {
+                return null;
+            }
+            else {
+                return results[1] || 0;
+            }
+        };
+        var selectedProducts = [];
+        var trendId = getQueryParam("trendId")
+        var taskId = getQueryParam("task")
+        $(document).ready(function () {
+
+            var username = getCookie("username");
+            if(username == null)
+                window.location = 'login.html'
+
+
+
+            $.get("http://localhost:8080/api/trend/" + trendId, function (data) {
+                renderTrend(data)
+            })
+
+
+            var renderTrend = function (trendData) {
+                console.log(trendData);
+                var html = "<h3>" + trendData["title"] + "</h3>";
+                for (i = 0; i < trendData["images"].length; i++) {
+
+                    html += "<div>"
+                    html += "<img class='col-sm-12' src='http://localhost:8999/" + trendData["images"][i]["url"] + " ' style='width:100%; height:auto;' class='img-rounded'/></div>"
+                }
+                html += "<h3> Vertical</h3>"
+                html += "<span id='vertical_trend'>" + trendData['vertical'] + "</span>"
+                html += "<h3> Must Have</h3>"
+                html += trendData["mustHave"]
+                html += "<h3> Must Not Have</h3>"
+                html += trendData["mustNotHave"]
+                console.log(html);
+
+                $("#trend").html(html);
+            }
+
+            var populateResults = function (productsData) {
+                var html = "";
+
+                var count = 0;
+
+                _.forEach(productsData, function (value, key) {
+
+                    var idx = $.inArray(key, selectedProducts);
+
+                    if (count == 0) {
+                        html += "<div class='row'><div class='col-sm-12'>"
+                    }
+                    html += "<div class='col-sm-4' style='text-align:center;border:1px solid grey'>"
+                    html += "<img class='col-sm-12' src='" + value[0] + "' style='width:230px; height:231px;' class='img-rounded'/>"
+                    html += "<input type='checkbox' id='" + key + "' class='trenSel' data-product-id='" + key + "' " + ((idx != -1) ? "checked" : "" ) + " /> &nbsp;&nbsp;&nbsp;&nbsp;" + key
+                    html += "</div>"
+                    count += 1;
+                    if (count == 3) {
+                        html += "</div></div><div class='row'><hr/></div>"
+                        count = 0;
+                    }
+                })
+
+                // console.log(html);
+
+                $("#wrapper").html(html);
+            }
+
+            var renderFilters = function (data) {
+                var html = "";
+                var count = 0;
+                _.forEach(data, function (value, key) {
+                    html += "<h3>" + key + "</h3>"
+                    for (i = 0; i < value.length; i++) {
+                        html += "<input type='checkbox' id=" + value[i] + "> " + value[i] + "<br>"
+                    }
+                    html += "<hr/>"
+                })
+
+                // console.log(html);
+
+                $("#filters_display").html(html);
+            }
+
+            // renderFilters(data);
+
+            $("#wrapper").on('change', '.trenSel', function () {
+                var value = $(this).attr("data-product-id");
+                // alert(value);
+                if (_.indexOf(selectedProducts, value) != -1) {
+                    // alert("data already present")
+                    var index = _.indexOf(selectedProducts, value);
+                    selectedProducts.splice(index, 1)
+                    // alert("deleted " + _.indexOf( selectedProducts, value))
+                } else {
+                    selectedProducts.push(value);
+                }
+                var html = ""
+                var count = 0
+                _.forEach(selectedProducts, function () {
+                    html += "<span> " + selectedProducts[count] + "</span><br>"
+                    count += 1
+                })
+                $("#selected_fsns").html(html);
+            })
+
+            $("#search_button").on('click', function () {
+                var search_term = $("#search_term").val();
+                var vertical = $("#vertical_trend").text();
+                $.get("http://localhost:8080/api/sherlock/search/" + search_term + "in " + vertical + "s?start=0", function (data) {
+                    var productsData = data["productIds"];
+                    populateResults(productsData);
+                });
+                $.get("http://localhost:8080/api/sherlock/filter/" + search_term + "in " + vertical + "s", function (data) {
+                    renderFilters(data);
+                })
+            })
+
+            var getProductPerPage = function () {
+                var search_term = $("#search_term").val();
+                var vertical = $("#vertical_trend").text();
+                $.get("http://localhost:8080/api/sherlock/search/" + search_term + "in " + vertical + "s?start=" + (page_count * 60), function (data) {
+                    var productsData = data["productIds"];
+                    populateResults(productsData);
+                });
+            }
+
+            $("#trend_title").on('click', function () {
+                $("#trend").toggle(1000);
+            })
+
+            var page_count = 0
+            $("#previous").on('click', function () {
+                if (page_count > 0) {
+                    page_count -= 1;
+                    getProductPerPage()
+                }
+            })
+
+            $("#next").on('click', function () {
+                page_count += 1;
+                getProductPerPage()
+
+            })
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1);
+                    if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+                }
+                return "";
+            }
+
+
+        });
+
+    </script>
+
+</head>
+<body>
+
+<div id="content">
+    <center><input id="search_term" type="text" name="search" placeholder="Search"> &nbsp;&nbsp;&nbsp;&nbsp;
+        <button id="search_button" type="button" class="btn btn-primary">Search</button>
+    </center>
+    <br>
+
+    <div class="row">
+        <div id="left" class="col-sm-2 well">
+            <center><h3>Filters</h3></center>
+            <div id="filters_display"></div>
+
+        </div>
+        <div id="center" class="col-sm-7 well">
+            <center><h3>Products</h3></center>
+            <div class="col-sm-12" id="wrapper">
+            </div>
+            <button id="previous" type="button" class="btn btn-primary">Previous</button>
+            <button id="next" type="button" class="btn btn-primary">Next</button>
+        </div>
+        <div id="right" class="col-sm-3 well">
+            <center><h3 id="trend_title">Trend</h3></center>
+            <div id="trend">
+            </div>
+            <center><b>FSNs</b></center>
+            <div id="selected_fsns">
+
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
