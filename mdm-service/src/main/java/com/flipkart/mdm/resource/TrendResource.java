@@ -42,8 +42,10 @@ public class TrendResource {
     private TaskDAO taskDAO;
 
     @Inject
-    public TrendResource(TrendDAO trendDAO) {
+    public TrendResource(TrendDAO trendDAO, UserDAO userDAO, TaskDAO taskDAO) {
         this.trendDAO = trendDAO;
+        this.userDAO = userDAO;
+        this.taskDAO = taskDAO;
     }
 
     @POST
@@ -106,6 +108,22 @@ public class TrendResource {
     }
 
 
+    @GET
+    @Path("/all")
+    @Timed
+    @UnitOfWork
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllTrends() {
+        try {
+            List<Trend> trends = trendDAO.getAll();
+            return Response.ok(trends).build();
+        } catch (DBException e) {
+            throw new SystemResourceException(500, e.getMessage());
+        }
+    }
+
+
     @POST
     @Path("/{trendid}")
     @Timed
@@ -113,19 +131,20 @@ public class TrendResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addCurator(@PathParam("trendid") String trendId, @QueryParam("users") String userIds) {
-        int count =0;
+        int count = 0;
         try {
             Trend trend = trendDAO.findById(trendId);
-            if(trend != null){
-                for(String  userId :  userIds.split(",")){
-                    User user = userDAO.findById(userId);
-                    if(user != null){
+            if (trend != null) {
+                for (String userId : userIds.split(",")) {
+                    User user = userDAO.findByName(userId);
+                    if (user != null) {
                         Task task = new Task();
                         task.setStatus(TaskStatus.CREATED);
-                        task.setTrend(trend);
                         task.setUser(user);
+                        task.setTrendId(trend.getId());
                         taskDAO.save(task);
                         count++;
+                        trend.getTasks().add(task);
                     }
                 }
             }

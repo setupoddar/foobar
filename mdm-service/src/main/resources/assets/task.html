@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <title>Task List</title>
+
+    <script>
+        $(document).ready(function () {
+            var username = getCookie("username");
+
+            $.ajax({
+                type: "GET",
+                url: '/api/task/' + username,
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    var trHTML = '';
+                    $.each(response, function (i, item) {
+                        trHTML += '<tr><td><a href="/curation.html?taskId=' + item.id + '">'+item.id +'</a>'
+                        + '</td><td>' + item.trendId
+                        + '</td><td>' + item.status
+                        + '</td></tr>';
+                    });
+                    $('#trend').append(trHTML);
+                },
+                error: function (msg) {
+                    var message = JSON.parse(json.responseText).message;
+                    alert(message);
+                }
+            });
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1);
+                    if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+                }
+                return "";
+            }
+        })
+    </script>
+</head>
+<body>
+<table id="trend" border='1'>
+    <tr>
+        <th>Task Id</th>
+        <th>Trend Id</th>
+        <th>Status</th>
+    </tr>
+</table>
+</body>
+</html>

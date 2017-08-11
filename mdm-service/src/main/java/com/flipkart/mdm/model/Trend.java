@@ -20,7 +20,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @Entity
 @Table(name = "TREND")
-public class Trend implements GenericModel{
+public class Trend implements GenericModel {
 
     @Id
     @GenericGenerator(name = "id", strategy = "com.flipkart.mdm.model.idgenerator.TrendIdGenerator")
@@ -52,7 +52,10 @@ public class Trend implements GenericModel{
             inverseJoinColumns = {@JoinColumn(name = "IMAGE_ID")})
     private Set<Images> images = new HashSet();
 
-    @OneToMany(mappedBy = "trend")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "TREND_TASKS",
+            joinColumns = {@JoinColumn(name = "TREND_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "TASK_ID")})
     private Set<Task> tasks = new HashSet();
 
 

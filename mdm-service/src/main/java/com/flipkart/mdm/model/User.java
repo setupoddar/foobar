@@ -27,7 +27,7 @@ public class User implements GenericModel {
     @Column(name = "ID")
     private String id;
 
-    @Column(name = "NAME", nullable = false, unique = false)
+    @Column(name = "NAME", nullable = false, unique = true)
     private String name;
 
     @Column(name = "PASSWORD", nullable = false, unique = false)
@@ -38,11 +38,4 @@ public class User implements GenericModel {
             joinColumns = {@JoinColumn(name = "USER_ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID")})
     private Set<Role> roles = new HashSet<Role>();
-
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "USER_TASK",
-            joinColumns = {@JoinColumn(name = "USER_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "TASK_ID")})
-    private Set<Task> tasks = new HashSet<Task>();
 }

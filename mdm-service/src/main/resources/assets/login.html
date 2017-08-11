@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <title>Login</title>
+</head>
+
+<script>
+
+    $(function () {
+        $('#login').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'post',
+                url: '/api/login',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (json) {
+                    console.log(json)
+                    setCookie("username",$('#username').val() )
+                    window.location = 'home.html'
+                },
+                error: function (json) {
+                    var message = JSON.parse(json.responseText).message;
+                    alert(message);
+                }
+            });
+        });
+    });
+
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*60*60*1000));
+        var expires = "expires="+ d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+</script>
+<body>
+
+<form id="login">
+    <div class="container">
+        <label><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="username" id="username" required>
+        <label><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="password" id="password" required>
+        <button type="submit">Login</button>
+    </div>
+</form>
+</body>
+</html>

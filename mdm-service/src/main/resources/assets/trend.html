@@ -74,6 +74,7 @@
                     success: function (json) {
                         console.log(json)
                         alert("Trend Created");
+                        window.location = 'home.html'
                     },
                     error: function (json) {
                         var message = JSON.parse(json.responseText).message;
@@ -83,32 +84,27 @@
             });
         });
 
-
     </script>
 </head>
 <body>
 <center><h2>CREATE TREND</h2>
 
     <form id="trendForm">
-        <h2>Trend Title : <input type="text" name="title"></h2>
+        <h2>Trend Title : <input type="text" id="title" name="title" required></h2>
         Vertical : <select id="vertical" name="vertical"></select><br><br>
-        Upload trend sample images : <input type="file" name="images" id="images" multiple>
+        Upload trend sample images : <input type="file" name="images" id="images" multiple required>
 
-        <div class="display_images">
-
-        </div>
+        <div class="display_images"></div>
         <h2>Guidelines :</h2>
 
         <h3> Must Have </h3>
-        <textarea id="must_have" name="must_have" rows="4" cols="50">
-    </textarea>
+        <textarea id="must_have" name="must_have" rows="4" cols="50"></textarea>
 
         <h3> Must Not Have</h3>
-        <textarea id="must_not_have" name="must_not_have" rows="4" cols="50">
-    </textarea>
+        <textarea id="must_not_have" name="must_not_have" rows="4" cols="50"></textarea>
         <br><br>
-        Trend start date : <input class="datepicker" name="start_date"/><br><br>
-        Trend end date : <input class="datepicker" name="end_date"/><br><br>
+        Trend start date : <input class="datepicker" name="start_date" id="start_date" required/><br><br>
+        Trend end date : <input class="datepicker" name="end_date" id="end_date" required/><br><br>
         <input type="submit" name="submit" value="Create">
     </form>
 </center>

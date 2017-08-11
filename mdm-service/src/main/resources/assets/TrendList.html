@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <title>Trend List</title>
+
+
+    <script>
+        $(document).ready(function () {
+            jQuery.support.cors = true;
+            $.ajax({
+                type: "GET",
+                url: '/api/trend/all',
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    var trHTML = '';
+                    $.each(response, function (i, item) {
+                        trHTML += '<tr><td>' + item.id
+                        + '</td><td>' + item.title
+                        + '</td><td>' + item.vertical
+                        + '</td><td>' + new Date(item.startDate)
+                        + '</td><td>' + new Date(item.endDate)
+                        + '</td><td>' + item.tasks.length
+                        + '</td></tr>';
+                    });
+                    $('#trend').append(trHTML);
+                },
+                error: function (msg) {
+                    var message = JSON.parse(json.responseText).message;
+                    alert(message);
+                }
+            });
+        })
+
+    </script>
+</head>
+<body>
+<table id="trend" border='1'>
+    <tr>
+        <th>Trend Id</th>
+        <th>Title</th>
+        <th>Vertical</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Number of Tasks</th>
+    </tr>
+</table>
+</body>
+</html>

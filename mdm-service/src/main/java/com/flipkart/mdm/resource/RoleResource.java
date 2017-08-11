@@ -1,6 +1,11 @@
 package com.flipkart.mdm.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.flipkart.mdm.dal.dao.RoleDAO;
+import com.flipkart.mdm.dal.exception.DBException;
+import com.flipkart.mdm.model.Role;
+import com.flipkart.mdm.resource.exception.SystemResourceException;
+import com.google.inject.Inject;
 import io.dropwizard.hibernate.UnitOfWork;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,13 +21,21 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class RoleResource {
 
+    private RoleDAO roleDAO;
+
+    @Inject
+    public RoleResource(RoleDAO roleDAO) {
+        this.roleDAO = roleDAO;
+    }
+
     @GET
+    @Path("/{roleId}")
     @Timed
     @UnitOfWork
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRole(String taskId) {
-        return Response.ok().build();
+    public Response getRole(@PathParam("roleId") String roleId) {
+        return Response.ok(roleDAO.getByName(roleId)).build();
     }
 
 
@@ -32,7 +45,15 @@ public class RoleResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createRole(String role) {
-        return Response.ok().build();
+
+        Role r = new Role();
+        r.setName(role);
+        try {
+            roleDAO.save(r);
+        } catch (DBException e) {
+            throw new SystemResourceException(500, e.getMessage());
+        }
+        return Response.ok("Created").build();
     }
 
 }

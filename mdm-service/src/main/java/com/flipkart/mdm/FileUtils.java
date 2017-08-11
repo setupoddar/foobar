@@ -15,7 +15,7 @@ public class FileUtils {
 
     public static String saveFile(InputStream inputStream) throws Exception {
         OutputStream outputStream = null;
-        String fileName = UUID.randomUUID() + ".jpg";
+        String fileName = UUID.randomUUID() + FILE_EXT;
         String filePath = FILE_DIR + fileName;
         try {
             outputStream = new FileOutputStream(new File(filePath));

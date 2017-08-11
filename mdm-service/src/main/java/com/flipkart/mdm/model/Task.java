@@ -30,11 +30,10 @@ public class Task implements GenericModel{
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "TREND_ID", nullable = false, unique = false)
-    private Trend trend;
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false, unique = false)
     private User user;
+
+    @Column(name = "TREND_ID", nullable = false, unique = false)
+    private String trendId;
 }

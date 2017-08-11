@@ -2,9 +2,103 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <title>Home</title>
+
+    <script>
+        $(document).ready(function () {
+
+            var username = getCookie("username");
+            $.ajax({
+                type: "GET",
+                url: '/api/user/'+username+'/roles',
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    var idx = $.inArray("ADMIN", response);
+                    if (idx != -1) {
+                        $('#admin').show();
+                    } else {
+                        var id = $.inArray("CURATOR", response);
+                        if (id != -1) {
+                            $('#curator').show();
+                        }   else{
+                            $('#qc').show();
+                        }
+                    }
+
+
+
+                },
+                error: function (msg) {
+                    var message = JSON.parse(json.responseText).message;
+                    alert(message);
+                }
+            });
+        })
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1);
+                if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+            }
+            return "";
+        }
+
+    </script>
 </head>
 <body>
+You are eligible for Below
+<ul class="main-navigation">
+
+    <div id="admin" hidden="true">
+        <ul>
+            <li><a>Trend</a>
+                <ul>
+                    <li><a href="/TrendList.html">Trend List</a></li>
+                    <li><a href="/trend.html">Create Trend</a></li>
+                </ul>
+            </li>
+            <li><a>Tasks</a>
+                <ul>
+                    <li><a href="task.html">Task List</a></li>
+                    <li><a href="assignTask.html">Create Task</a></li>
+
+                </ul>
+            </li>
+            <li><a>QC</a>
+                <ul>
+
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div id="curator" hidden="true">
+        <li><a>Tasks</a>
+            <ul>
+                <li><a href="task.html">Task List</a></li>
+
+            </ul>
+        </li>
+    </div>
+
+
+    <div id="qc" hidden="true">
+        <li><a>Tasks</a>
+            <ul>
+                <li><a href="task.html">Task List</a></li>
+            </ul>
+        </li>
+    </div>
+</ul>
 
 </body>
 </html>
