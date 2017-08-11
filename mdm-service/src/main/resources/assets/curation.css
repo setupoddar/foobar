@@ -27,3 +27,7 @@ overflow-y:scroll;
 #next{
 	float: right;
 }
+#submit{
+	float:bottom;
+	text-align: center;
+}
