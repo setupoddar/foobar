@@ -10,7 +10,6 @@ public class FileUtils {
 
     private static final String FILE_DIR = "/tmp/";
     private static final String FILE_EXT = ".jpg";
-    private static final String FILE_URL = "file:///tmp/";
 
 
     public static String saveFile(InputStream inputStream) throws Exception {

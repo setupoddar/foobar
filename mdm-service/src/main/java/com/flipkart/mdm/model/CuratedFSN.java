@@ -33,9 +33,9 @@ public class CuratedFSN implements GenericModel {
     @JoinColumn(name = "TREND_ID", nullable = false, unique = false)
     private Trend trend;
 
-    @OneToMany()
-    @JoinColumn(name = "TREND_ID", nullable = false, unique = false)
-    private User  user;
+    @OneToOne()
+    @JoinColumn(name = "USER_ID", nullable = false, unique = false)
+    private User user;
 
     @Column(name="FSNS", nullable = false, unique = false)
     private String fsns;

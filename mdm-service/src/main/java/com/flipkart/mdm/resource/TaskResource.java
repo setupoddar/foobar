@@ -1,6 +1,7 @@
 package com.flipkart.mdm.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.flipkart.mdm.Utils;
 import com.flipkart.mdm.client.MHttpClient;
 import com.flipkart.mdm.dal.dao.CuratedFSNDAO;
 import com.flipkart.mdm.dal.dao.TaskDAO;
@@ -40,11 +41,13 @@ public class TaskResource {
     private MHttpClient mHttpClient;
 
     @Inject
-    public TaskResource(TaskDAO taskDAO, UserDAO userDAO, CuratedFSNDAO curatedFSNDAO, TrendDAO trendDAO) {
+    public TaskResource(TaskDAO taskDAO, UserDAO userDAO, CuratedFSNDAO curatedFSNDAO, TrendDAO trendDAO,MHttpClient mHttpClient) {
         this.taskDAO = taskDAO;
         this.userDAO = userDAO;
         this.curatedFSNDAO = curatedFSNDAO;
         this.trendDAO = trendDAO;
+        this.mHttpClient = mHttpClient;
+
     }
 
     @GET
@@ -79,20 +82,19 @@ public class TaskResource {
         User user = userDAO.findByName(request.getUserId());
         Task task = taskDAO.findById(request.getTaskId());
         task.setStatus(TaskStatus.COMPLETED);
-        taskDAO.save(task);
+        taskDAO.saveOrUpdate(task);
         Trend trend = trendDAO.findById(request.getTrendId());
         CuratedFSN curatedFSN = new CuratedFSN();
         curatedFSN.setTaskId(task);
         curatedFSN.setTrend(trend);
         curatedFSN.setUser(user);
-        String fsns = request.getFsns().toArray().toString();
-        curatedFSN.setFsns(fsns.replace("[", "").replace("]", ""));
+        curatedFSN.setFsns(Utils.convert(request.getFsns()));
         curatedFSNDAO.save(curatedFSN);
 
         int complete = 0;
         Set<String> allFSN = new HashSet();
         for (Task t : trend.getTasks()) {
-            if (TaskStatus.COMPLETED.name().equals(t.getStatus())) {
+            if (TaskStatus.COMPLETED.equals(t.getStatus())) {
                 complete++;
                 CuratedFSN curatedFSN_t = curatedFSNDAO.findByTaskId(t.getId());
                 allFSN.addAll(Arrays.asList(curatedFSN_t.getFsns().split(",")));

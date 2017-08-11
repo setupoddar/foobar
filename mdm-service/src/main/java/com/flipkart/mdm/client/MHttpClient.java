@@ -22,7 +22,7 @@ public class MHttpClient {
 
     private Client client;
     private Gson gson;
-    private static final String PATH = "http://172.20.45.255:8080/v2";
+    private static final String PATH = "http://172.20.45.47:8080/v2";
 
     @Inject
     public MHttpClient(Client client, Gson gson) throws Exception {

@@ -24,7 +24,7 @@ import javax.ws.rs.client.ClientBuilder;
 public class MDMModule extends AbstractModule {
 
     private HibernateBundle hibernateBundle = new HibernateBundle<MDMConfiguration>(
-            User.class, Images.class, Role.class, Task.class, Trend.class) {
+            User.class, Images.class, Role.class, Task.class, Trend.class, QCFSN.class, CuratedFSN.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(MDMConfiguration configuration) {
             return configuration.getDataSourceFactory();

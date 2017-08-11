@@ -1,6 +1,7 @@
 package com.flipkart.mdm.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.flipkart.mdm.Utils;
 import com.flipkart.mdm.dal.dao.QCFSNDAO;
 import com.flipkart.mdm.dal.dao.TrendDAO;
 import com.flipkart.mdm.dal.exception.DBException;
@@ -44,7 +45,7 @@ public class QCResource {
             Trend trend = trendDAO.findById(request.getTrendId());
             QCFSN qcfsn = new QCFSN();
             qcfsn.setTrend(trend);
-            qcfsn.setFsns(request.getFsns().toArray().toString().replace("[", "").replace("]", ""));
+            qcfsn.setFsns(Utils.convert(request.getFsns()));
             qcfsn.setStatus(TaskStatus.CREATED);
             qcfsnDAO.save(qcfsn);
         } catch (DBException e) {
@@ -89,7 +90,7 @@ public class QCResource {
     public Response submitTask(@PathParam("id") String id, TaskCompleteRequest request) throws DBException {
         QCFSN qcfsn = qcfsnDAO.findById(id);
         qcfsn.setStatus(TaskStatus.COMPLETED);
-        qcfsn.setFinalFsn(request.getFsns().toArray().toString().replace("[", "").replace("]", ""));
+        qcfsn.setFinalFsn(Utils.convert(request.getFsns()));
         qcfsnDAO.save(qcfsn);
         return Response.ok("{\"message\":\"save\"}").build();
     }

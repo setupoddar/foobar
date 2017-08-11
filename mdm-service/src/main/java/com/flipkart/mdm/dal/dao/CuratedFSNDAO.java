@@ -18,7 +18,7 @@ public class CuratedFSNDAO extends GenericDAO<CuratedFSN> {
 
     public CuratedFSN findByTaskId(String id) {
         Criteria criteria = criteria();
-        criteria.add(Restrictions.eq("trend.id", id));
+        criteria.add(Restrictions.eq("taskId.id", id));
         return uniqueResult(criteria);
     }
 }

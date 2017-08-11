@@ -21,6 +21,8 @@ abstract class GenericDAO<T extends GenericModel> extends AbstractDAO<T> {
             }
         } catch (Exception e) {
             throw new DBException("Unable to save or update object", e);
+        }finally {
+            currentSession().flush();
         }
     }
 
@@ -34,6 +36,8 @@ abstract class GenericDAO<T extends GenericModel> extends AbstractDAO<T> {
             }
         } catch (Exception e) {
             throw new DBException("Unable to save object", e);
+        } finally {
+            currentSession().flush();
         }
     }
 
@@ -47,6 +51,8 @@ abstract class GenericDAO<T extends GenericModel> extends AbstractDAO<T> {
             }
         } catch (Exception e) {
             throw new DBException("Unable to update object", e);
+        }finally {
+            currentSession().flush();
         }
     }
 

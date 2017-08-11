@@ -17,7 +17,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
-@Table(name = "CURATED_RESULT")
+@Table(name = "QC_STATUS")
 public class QCFSN implements GenericModel {
 
     @Id

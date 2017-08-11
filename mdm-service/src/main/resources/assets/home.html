@@ -30,7 +30,12 @@
                         if (id != -1) {
                             $('#curator').show();
                         } else {
-                            $('#qc').show();
+                            var id = $.inArray("QC", response);
+                            if (id != -1) {
+                                $('#qc').show();
+                            } else {
+                                  window.location ='login.html'
+                            }
                         }
                     }
                 },
