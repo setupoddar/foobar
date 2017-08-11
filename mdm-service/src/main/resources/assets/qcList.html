@@ -13,7 +13,7 @@
 
             $.ajax({
                 type: "GET",
-                url: '/api/qc/all' + username,
+                url: 'http://localhost:8080/api/qc/all/all',
                 data: "{}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
@@ -22,17 +22,13 @@
                     var trHTML = '';
                     $.each(response, function (i, item) {
                         trHTML += '<tr><td><a href="/qc.html?id=' + item.id + '">' + item.id + '</a>'
-                        + '</td><td>' + item.trendId
+                        + '</td><td>' + item.trend.id
                         + '</td><td>' + item.fsns
                         + '</td><td>' + item.finalFsn
                         + '</td><td>' + item.status
                         + '</td></tr>';
                     });
                     $('#trend').append(trHTML);
-                },
-                error: function (msg) {
-                    var message = JSON.parse(json.responseText).message;
-                    alert(message);
                 }
             });
 

@@ -36,10 +36,10 @@ public class QCResource {
     private ZHttpClient zHttpClient;
 
     @Inject
-    public QCResource(QCFSNDAO qcfsnDAO,TrendDAO trendDAO, ZHttpClient zHttpClient) {
+    public QCResource(QCFSNDAO qcfsnDAO, TrendDAO trendDAO, ZHttpClient zHttpClient) {
         this.qcfsnDAO = qcfsnDAO;
         this.trendDAO = trendDAO;
-        this.zHttpClient= zHttpClient;
+        this.zHttpClient = zHttpClient;
     }
 
     @POST
@@ -56,14 +56,14 @@ public class QCResource {
             qcfsn.setStatus(TaskStatus.CREATED);
             qcfsnDAO.save(qcfsn);
         } catch (DBException e) {
-            throw new SystemResourceException(500,e.getMessage());
+            throw new SystemResourceException(500, e.getMessage());
         }
         return Response.ok().build();
     }
 
 
     @GET
-    @Path("/all")
+    @Path("/all/all")
     @Timed
     @UnitOfWork
     @Consumes(MediaType.APPLICATION_JSON)
@@ -71,7 +71,6 @@ public class QCResource {
     public Response getAll() {
         return Response.ok(qcfsnDAO.getAll()).build();
     }
-
 
 
     @GET
@@ -84,18 +83,21 @@ public class QCResource {
         try {
             QCFSN qcfsn = qcfsnDAO.findById(id);
 
-            SearchResult searchResult = new SearchResult();
-            List<String> productIds = Arrays.asList(qcfsn.getFsns().split(","));
-            searchResult.setStart(0);
-            searchResult.setTotalCount(productIds.size());
-            searchResult.setCount(productIds.size());
-            for(String pr : productIds){
-                searchResult.getProductIds().put(pr, new HashSet<String>());
+            if (qcfsn != null) {
+                SearchResult searchResult = new SearchResult();
+                List<String> productIds = Arrays.asList(qcfsn.getFsns().split(","));
+                searchResult.setStart(0);
+                searchResult.setTotalCount(productIds.size());
+                searchResult.setCount(productIds.size());
+                for (String pr : productIds) {
+                    searchResult.getProductIds().put(pr, new HashSet<String>());
+                }
+                return Response.ok(zHttpClient.getImageUrls(searchResult)).build();
             }
-            return Response.ok(zHttpClient.getImageUrls(searchResult)).build();
         } catch (DBException e) {
-            throw new SystemResourceException(500,e.getMessage());
+            throw new SystemResourceException(500, e.getMessage());
         }
+        throw new SystemResourceException(500, "Error");
     }
 
     @POST
@@ -108,7 +110,7 @@ public class QCResource {
         QCFSN qcfsn = qcfsnDAO.findById(id);
         qcfsn.setStatus(TaskStatus.COMPLETED);
         qcfsn.setFinalFsn(Utils.convert(request.getFsns()));
-        qcfsnDAO.save(qcfsn);
+        qcfsnDAO.saveOrUpdate(qcfsn);
         return Response.ok("{\"message\":\"save\"}").build();
     }
 
