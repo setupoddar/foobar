@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by setu.poddar on 22/06/17.
@@ -135,7 +136,19 @@ public class TrendResource {
         try {
             Trend trend = trendDAO.findById(trendId);
             if (trend != null) {
+
                 for (String userId : userIds.split(",")) {
+                    boolean assigned = false;
+                    Set<Task> tasks = trend.getTasks();
+                    for (Task t : tasks) {
+                        if (t.getUser().getName().equals(userId)) {
+                            assigned = true;
+                            break;
+                        }
+                    }
+
+                    if (assigned)
+                        break;
                     User user = userDAO.findByName(userId);
                     if (user != null) {
                         Task task = new Task();
@@ -148,7 +161,7 @@ public class TrendResource {
                     }
                 }
             }
-            return Response.ok("Task Created for users").build();
+            return Response.ok("{\"message\":\"Task Created for users\"}").build();
         } catch (DBException e) {
             throw new SystemResourceException(500, e.getMessage());
         }

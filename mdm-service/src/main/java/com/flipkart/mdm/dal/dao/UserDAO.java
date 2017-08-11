@@ -8,6 +8,8 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.List;
+
 @Slf4j
 public class UserDAO extends GenericDAO<User> {
 
@@ -20,5 +22,10 @@ public class UserDAO extends GenericDAO<User> {
         Criteria criteria = criteria();
         criteria.add(Restrictions.eq("name", userId));
         return uniqueResult(criteria);
+    }
+
+    public List<User> getAll() {
+        Criteria criteria = criteria();
+        return list(criteria);
     }
 }

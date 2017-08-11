@@ -2,9 +2,80 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <title>Assign Task</title>
-</head>
-<body>
+    <script>
 
+        $(function () {
+            $(document).ready(function () {
+                $.ajax({
+                    type: "GET",
+                    url: '/api/user/all',
+                    data: "{}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    cache: false,
+                    success: function (response) {
+
+                        var trHTML = '';
+                        $.each(response, function (key, value) {
+                            trHTML += '<tr><td>'+key  + '</a>'
+                            + '</td><td>' + value
+                            + '<td><a id="'+key.replace(".","_")+'" onclick="assign(\''+key+'\')">Assign</a>'
+                            + '</td></tr>';
+                        });
+                        $('#trend').append(trHTML);
+                    },
+                    error: function (msg) {
+                        var message = JSON.parse(json.responseText).message;
+                        alert(message);
+                    }
+                });
+            });
+        });
+
+        function assign(username){
+           var trend = getQueryParam("trendId");
+            $.ajax({
+                type: "POST",
+                url: '/api/trend/'+trend + '?users='+username,
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    $('#trend #'+username.replace(".","_")).hide();
+                },
+                error: function (msg) {
+                    var message = JSON.parse(json.responseText).message;
+                    alert(message);
+                }
+            });
+        }
+
+        var getQueryParam = function (name) {
+            var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+            if (results == null) {
+                return null;
+            }
+            else {
+                return results[1] || 0;
+            }
+        };
+
+    </script>
+
+</head>
+
+<body>
+<table id="trend" border='1'>
+    <tr>
+        <th>Username</th>
+        <th>Roles</th>
+        <th>Assign</th>
+    </tr>
+</table>
 </body>
 </html>

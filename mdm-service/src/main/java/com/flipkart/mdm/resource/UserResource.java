@@ -15,9 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by setu.poddar on 10/08/17.
@@ -102,4 +100,22 @@ public class UserResource {
         return Response.ok("User Created").build();
     }
 
+
+    @GET
+    @Path("/all")
+    @Timed
+    @UnitOfWork
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAll() {
+        Map<String,Set<String>> res = new HashMap();
+        List<User> users = userDAO.getAll();
+        for(User user : users){
+            res.put(user.getName(), new HashSet());
+            for(Role r : user.getRoles()){
+                res.get(user.getName()).add(r.getName());
+            }
+        }
+        return Response.ok(res).build();
+    }
 }

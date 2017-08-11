@@ -21,7 +21,7 @@
                 success: function (response) {
                     var trHTML = '';
                     $.each(response, function (i, item) {
-                        trHTML += '<tr><td><a href="/curation.html?taskId=' + item.id + '">'+item.id +'</a>'
+                        trHTML += '<tr><td><a href="/curation.html?taskId=' + item.id + '&trendId='+item.trendId+'">'+item.id +'</a>'
                         + '</td><td>' + item.trendId
                         + '</td><td>' + item.status
                         + '</td></tr>';
